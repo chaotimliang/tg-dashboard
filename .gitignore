@@ -1,0 +1,18 @@
+# Credentials & sessions - NEVER commit these
+telegram_credentials.txt
+*.session
+*.session-journal
+telegram_browser_profile/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# IDE
+.vscode/
+.claude/
+
+# Misc
+nul

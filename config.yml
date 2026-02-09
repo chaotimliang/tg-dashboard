@@ -1,0 +1,31 @@
+source:
+  url: "https://example.com/"
+
+  # How to find items (posts/cards/articles) on the page.
+  # Change these per site.
+  item_selector: "article, .post, .message, .entry"
+
+  # Within each item, where to find text and images.
+  title_selector: "h1, h2, h3, .title"
+  body_selector: "p, .content, .message-body, .post-body, .entry-content"
+  image_selector: "img"
+
+  # Optional: if the page is JS-rendered, set to true to use Playwright.
+  # If false, it will use requests+BeautifulSoup.
+  use_browser: false
+
+  # If using browser mode, wait this long after navigation.
+  browser_wait_ms: 1500
+
+  # Optional headers (some sites require a user-agent).
+  headers:
+    User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) LiveScraperViewer/1.0"
+
+refresh:
+  # How often to poll the page (seconds).
+  interval_seconds: 10
+
+display:
+  # How many newest items to keep on screen.
+  max_items: 100
+

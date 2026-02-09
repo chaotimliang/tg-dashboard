@@ -1,0 +1,28 @@
+# Telegram-optimized config for public channel preview (t.me/s/channel).
+# Focus: Russian-language content → English translation.
+# URL can be overridden in the GUI.
+#
+# Optional: use a persistent browser profile (logged-in client) so images load with your session.
+# Set browser_user_data_dir to a folder path (e.g. ./telegram_browser_profile). First run: open
+# that folder in a browser, go to t.me or web.telegram.org and log in. Then the viewer will use
+# that profile and fetch images in the same session (no API key needed).
+source:
+  url: "https://t.me/s/okspn"
+  use_browser: true
+  browser_wait_ms: 2500
+  browser_user_data_dir: "./telegram_browser_profile"  # uses logged-in session for images
+  # t.me/s public preview page: each post is a widget message
+  item_selector: "div.tgme_widget_message"
+  title_selector: ".tgme_widget_message_author_name, .tgme_channel_info_header_title"
+  body_selector: ".tgme_widget_message_text"
+  # Message images via background-image CSS (excludes avatars)
+  image_selector: ".tgme_widget_message_photo_wrap"
+  headers:
+    User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    Accept-Language: "ru-RU,ru;q=0.9,en;q=0.8"
+
+refresh:
+  interval_seconds: 30
+
+display:
+  max_items: 100
