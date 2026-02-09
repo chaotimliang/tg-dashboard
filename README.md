@@ -39,38 +39,6 @@ streamlit run app.py
 
 ---
 
-## Weibo Viewer (two-panel GUI + translation)
-
-Optimized for **Weibo** (e.g. account **@Lt_Shaw**): split-panel GUI with **raw content** on the left and **English translation** on the right. The left panel is **collapsible** so you can hide the original and only view the translation.
-
-### Run the Weibo viewer (from source)
-
-```bash
-cd "C:\Users\chaot\scraper_viewer"
-.\.venv\Scripts\Activate.ps1
-python run_weibo_viewer.py
-```
-
-Or double-click `run_weibo_viewer.py` if Python is on your PATH.
-
-- **Left panel:** Enter a Weibo URL or handle (e.g. `Lt_Shaw` or `@Lt_Shaw`), click **Fetch**. Raw scraped content appears below. Use **Hide original** to collapse the left panel; **Show original** to bring it back.
-- **Right panel:** Shows the same content translated to English (Google Translate via `deep-translator`, no API key).
-
-Config for Weibo selectors and defaults: `config_weibo.yml`.
-
-### Build a single executable (.exe)
-
-1. Install PyInstaller: `pip install pyinstaller`
-2. From the project folder (with venv active):  
-   `pyinstaller weibo_viewer.spec`
-3. Run the built app:  
-   `dist\WeiboViewer.exe`
-
-**Note:** The first time you use the viewer (from source or from the .exe), ensure Chromium is installed for Playwright:  
-`python -m playwright install chromium`  
-(Do this once per machine; the .exe uses the same Playwright/Chromium install when run from that environment.)
-
----
 
 ## Telegram Viewer (two-panel GUI + translation, Russian → English)
 
