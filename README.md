@@ -8,7 +8,7 @@ A custom Telegram channel viewer that uses a **local LLM** (via Ollama) to provi
 
 - **Dual-panel viewer** — original (Russian) on the left, English translation on the right
 - **Local translation** — Argos Translate, MarianMT, or Ollama (no internet required)
-- **AI-assisted search** — uses a local vision model to find images relevant to your query (e.g. searching "Ka-52" finds images of the helicopter even if it isn't mentioned in the text)
+- **AI-assisted search** — uses a local vision model to find images relevant to your query and presents adjacent post with high relational probability by increasing search context via adjacent terms in both English and Russian
 - **Analytics panel** — extracts equipment losses, casualties, and operational intelligence from post text using a local LLM, displayed as charts
 - **Grid view** — thumbnail gallery for browsing media-heavy channels
 - **Live mode** — continuously polls a channel for new posts matching a search query
