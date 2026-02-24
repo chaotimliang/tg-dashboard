@@ -57,7 +57,6 @@ ollama pull llava           # vision model for image analysis
 
 ---
 
-<<<<<<< HEAD
 ## Usage
 
 ```bash
