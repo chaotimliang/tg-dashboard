@@ -1,44 +1,67 @@
-## Live Scraper Viewer
+# TG Dashboard
 
-This is a small **scraper + live reader window**:
+A custom Telegram channel viewer that uses a **local LLM** (via Ollama) to provide real-time translation, AI-assisted search, and automated analytics and insights from channel posts — all running offline on your machine.
 
-- Scrapes **text + images** from a page (forum thread, blog, etc.)
-- **Dedupes** items it has already shown
-- Refreshes on a timer and renders in a clean UI
-- Uses **Playwright** automatically if the page needs JavaScript to render
+---
 
-### Important notes
+## Features
 
-- **Respect the site’s Terms of Service and robots.txt**, and only scrape content you’re allowed to access.
-- Keep refresh rates reasonable to avoid overloading sites.
+- **Dual-panel viewer** — original (Russian) on the left, English translation on the right
+- **Local translation** — Argos Translate, MarianMT, or Ollama (no internet required)
+- **AI-assisted search** — uses a local vision model to find images relevant to your query (e.g. searching "Ka-52" finds images of the helicopter even if it isn't mentioned in the text)
+- **Analytics panel** — extracts equipment losses, casualties, and operational intelligence from post text using a local LLM, displayed as charts
+- **Grid view** — thumbnail gallery for browsing media-heavy channels
+- **Live mode** — continuously polls a channel for new posts matching a search query
+- **Media preview** — click any image to view full size with AI description and metadata
 
-### Setup (Windows PowerShell)
+---
 
-From this folder:
+## Requirements
+
+- Python 3.10+
+- [Ollama](https://ollama.com) running locally with at least one model (e.g. `gemma2`, `llama3.2`)
+- For vision/image analysis: a vision model installed (e.g. `ollama pull llava`)
+- Telegram API credentials (free — see setup below)
+
+---
+
+## Setup
 
 ```bash
-cd "C:\Users\chaot\scraper_viewer"
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -U pip
 pip install -r requirements.txt
-python -m playwright install chromium
 ```
 
-### Configure
+### Telegram API credentials
 
-Edit `config.yml`. The defaults try to work on “generic” pages, but forums usually need custom selectors.
+1. Go to [my.telegram.org](https://my.telegram.org) and log in
+2. Click **API development tools**
+3. Create an app — you'll get an `api_id` and `api_hash`
+4. Create `telegram_credentials.txt` in the project folder:
+   ```
+   api_id=YOUR_API_ID
+   api_hash=YOUR_API_HASH
+   ```
 
-### Run the live viewer
+This file is excluded from git (`.gitignore`) — never commit it.
+
+### Ollama models
+
+Install [Ollama](https://ollama.com), then pull the models you want:
 
 ```bash
-cd "C:\Users\chaot\scraper_viewer"
-.\.venv\Scripts\Activate.ps1
-streamlit run app.py
+ollama pull gemma2          # text analysis and translation
+ollama pull llava           # vision model for image analysis
 ```
 
 ---
 
+<<<<<<< HEAD
+## Usage
+
+```bash
+=======
 
 ## Telegram Viewer (two-panel GUI + translation, Russian → English)
 
@@ -51,49 +74,50 @@ Uses the **t.me/s/channel** public preview page (no login). Enter a channel name
 ```bash
 cd "C:\Users\chaot\scraper_viewer"
 .\.venv\Scripts\Activate.ps1
+>>>>>>> 2b19ad324f909cb088d9325d7562a23db9b37e88
 python run_telegram_viewer.py
 ```
 
-Or double-click `run_telegram_viewer.py`.
+1. Enter a channel name (e.g. `okspn`) in the **Channel** field
+2. Set a date range and click **Fetch**
+3. Use the **Search** or **Live Search** bar to filter posts
+4. Enable the **AI** checkbox on Live Search to find visually relevant images
+5. Check **Analytics** in the filter bar to open the analytics panel, then click **Analyze**
 
-- **Left panel:** Enter a Telegram channel or URL (e.g. `@durov`, `durov`, or `t.me/s/durov`), click **Fetch**. Raw scraped content appears below. Use **Hide original** to collapse the left panel; **Show original** to bring it back.
-- **Right panel:** Same content translated to English. Translation is tried in this order:
-  1. **Local MarianMT** (offline) — if you have `transformers` and `torch` installed.
-  2. **Local Ollama** — if Ollama is running (e.g. `ollama run gemma2`).
-  3. **Online** (Google / MyMemory via `deep-translator`) — fallback if local options aren’t available or fail.
+---
 
-Config: `config_telegram.yml`.
+## Analytics
 
-### Local translation (no internet)
+The analytics panel uses the local LLM to scan loaded posts and extract:
 
-- **Option A — Ollama (local LLM):** Install [Ollama](https://ollama.com), then run a model. The viewer tries **Gemma** first, then fallbacks:
-  ```bash
-  ollama run gemma2
-  ```
-  Other sizes: `ollama run gemma2:2b` (1.6GB), `ollama run gemma2:27b` (16GB). If Gemma isn’t installed, it will try `llama3.2` etc.
-- **Option B — MarianMT (offline model):** `pip install transformers torch` (first run will download the model). The viewer will use Helsinki-NLP/opus-mt-ru-en for translation with no external service.
+- **Equipment losses** — type, category (tank, helicopter, UAV, etc.), side (Russian/Ukrainian), and outcome (destroyed/damaged/captured)
+- **Casualties** — killed, wounded, captured by side
+- **Visualizations** — bar chart by equipment category, pie chart by side
 
-### Logged-in client (images that need your session)
+Results are displayed as charts in a collapsible right-side panel. No data leaves your machine.
 
-If images don’t load (e.g. Telegram CDN requires auth), you can plug in a **persistent browser profile** where you’re already logged in:
+---
 
-1. In `config_telegram.yml`, set under `source`:
-   ```yaml
-   browser_user_data_dir: "./telegram_browser_profile"
-   ```
-2. **One-time login:** run the helper so a visible browser opens and you can log in:
-   ```bash
-   python telegram_login_browser.py
-   ```
-   Log in at [web.telegram.org](https://web.telegram.org) in that window, then press Enter in the terminal to close.
-3. Next runs: when you fetch a channel in the viewer, it uses that profile; scraping and image loading happen in the same session, so images that require your login will load.
+## Translation
 
-### Build Telegram Viewer .exe
+Translation is attempted in this order, falling back as needed:
 
-```bash
-pyinstaller telegram_viewer.spec
-# Run: dist\TelegramViewer.exe
-```
+1. **Argos Translate** — fast, fully offline
+2. **MarianMT** — offline transformer model (`pip install transformers torch`)
+3. **Ollama** — local LLM fallback
+4. **Google Translate / MyMemory** — online fallback
 
-Same Playwright/Chromium requirement: run `python -m playwright install chromium` once per machine if needed.
+---
+
+## Project Structure
+
+| File | Description |
+|------|-------------|
+| `viewer_gui_telegram.py` | Main application GUI |
+| `telegram_client.py` | Telegram API client (Telethon) |
+| `translate_text.py` | Multi-backend translation |
+| `analytics_models.py` | Data structures for analytics |
+| `analytics_extractor.py` | LLM-powered extraction logic |
+| `analytics_panel.py` | Analytics UI panel with charts |
+| `run_telegram_viewer.py` | Entry point |
 
